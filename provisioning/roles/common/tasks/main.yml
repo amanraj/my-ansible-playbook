@@ -1,0 +1,26 @@
+---
+- name: Common | Update apt cache
+  sudo: true
+  apt: update-cache=yes cache_valid_time=3600
+  tags: common
+
+- name: Common | Update language
+  sudo: yes
+  apt: pkg=language-pack-en
+  tags: common
+
+- name: Install packages
+  sudo: yes
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+
+      # Python Dev
+      - python-dev
+      - python-setuptools
+      - python-virtualenv
+
+      - build-essential
+      - vim
+      - git
+      - wget
+      - curl

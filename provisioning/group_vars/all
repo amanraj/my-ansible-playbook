@@ -1,0 +1,11 @@
+---
+proxy_env:
+  http_proxy: http://10.3.100.207:8080
+  https_proxy: http://10.3.100.207:8080
+  ftp_proxy: http://10.3.100.207:8080
+src_root: /home/{{ansible_user_id}}/src
+nginx_hostname: hostname
+node_port: 3000
+web_project_name: web-test
+express_project_name: api
+express_base_route: api/

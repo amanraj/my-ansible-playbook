@@ -1,0 +1,42 @@
+---
+- hosts: all
+#	user: vagrant
+#  sudo: true
+  vars:
+    document_root: /vagrant
+
+  environment: 
+    http_proxy: http://10.3.100.207:8080
+    https_proxy: http://10.3.100.207:8080
+    ftp_proxy: http://10.3.100.207:8080
+
+  pre_tasks:
+   - name: update apt cache
+     apt: update-cache=yes cache_valid_time=3600
+    - name: Set proxy servers in /etc/environment if in IIT KHARAGPUR
+      sudo: yes
+      lineinfile:
+        dest: /etc/environment
+        insertafter: 'EOF'
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - { regexp: '^export http_proxy', line: 'export http_proxy=http://10.3.100.207:8080' }
+        - { regexp: '^export https_proxy', line: 'export https_proxy=http://10.3.100.207:8080' }
+        - { regexp: '^export ftp_proxy', line: 'export ftp_proxy=http://10.3.100.207:8080' }
+
+    - name: Change APT proxy servers if in IIT KHARAGPUR
+      sudo: yes
+      copy: src=files/apt.conf dest=/etc/apt/apt.conf force=yes
+
+    - name: Change git config file 
+      sudo: yes
+      copy: src=files/.gitconfig dest=~/.gitconfig force=yes
+
+
+  roles:
+    - common
+    - packages
+    - webserver
+    - database
+

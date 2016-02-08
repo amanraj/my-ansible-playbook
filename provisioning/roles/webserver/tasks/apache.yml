@@ -1,0 +1,27 @@
+---
+- name: install apache
+  sudo: yes
+  apt: name=apache2 state=present
+
+- name: copy across new virtual host
+  sudo: yes
+  template:
+    src=virtual-host.conf.j2
+    dest=/etc/apache2/sites-available/vagrant.conf
+  notify:
+    - reload apache
+
+- name: remove default virtual host
+  sudo: yes
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify:
+    - reload apache
+
+- name: enable new Vagrant virtual host
+  sudo: yes
+  file:
+    src=/etc/apache2/sites-available/vagrant.conf
+    dest=/etc/apache2/sites-enabled/vagrant.conf
+    state=link
+  notify:
+    - reload apache
